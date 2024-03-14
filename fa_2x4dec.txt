@@ -1,0 +1,41 @@
+//Design Code
+module dec2x4(output d3,d2,d1,d0, input i1,i0);
+  assign
+    d0=((~i1)&(~i0));
+  assign
+    d1=((~i1)&(i0));
+  assign
+    d2=((i1)&(~i0));
+  assign
+    d3=((i1)&(i0));
+endmodule
+module fa(output sum,carry, input a,b,c);
+  wire a3,a2,a1,a0;
+  wire sum1;
+  wire b3,b2,b1,b0;
+  dec2x4 d1(a3,a2,a1,a0,a,b);
+  assign sum1=a1|a2;
+  dec2x4 d2(b3,b2,b1,b0,sum1,c);
+  assign sum=b2|b1;
+  assign carry=a3|b3;
+endmodule
+
+//Test Bench Code
+module tb();
+  reg a,b,c;
+  wire sum,carry;
+  fa DUT(sum,carry,a,b,c);
+  initial
+    begin
+      integer i;
+      for(i=0;i<8;i=i+1)
+        begin
+          {a,b,c}=i;
+          #10;
+        end
+    end
+  initial
+    begin
+      $monitor("a=%d,b=%d,c=%d,sum=%d,carry=%d",a,b,c,sum,carry);
+    end
+endmodule
